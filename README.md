@@ -11,4 +11,5 @@
 - `git log` : 커밋 이력을 출력한다.
 - `git restore <파일명>` :  `git status`로 보여지는 파일 중에서 <파일명>을 원래상태로 복원 시킨다.
 - `git remote add origin https://github.com/pahkey/pybo.git` : https://github.com/pahkey/pybo.git 이라는 원격저장소를 연결한다.
-- `git push -u origin master` : master브랜치로 푸시한다.(원격저장소로 옮겨저장시킨다.)
+- `git push -u origin master` : master브랜치로 푸시한다.(원격저장소로 upstream/옮겨저장시킨다.)
+- `git pull` : 원격저장소로부터 변경사항을 가져온다.
