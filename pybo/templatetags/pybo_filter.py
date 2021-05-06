@@ -13,5 +13,6 @@ def sub(value, arg):
 
 @register.filter()
 def mark(value):
-    extensions = ["nl2br", "fenced_code"]
+    # https://python-markdown.github.io/extensions/
+    extensions = ["footnotes", "fenced_code", "nl2br", "md_in_html"]
     return mark_safe(markdown.markdown(value, extensions=extensions))
