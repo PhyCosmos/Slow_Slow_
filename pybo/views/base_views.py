@@ -44,10 +44,31 @@ def index(request):
     # ---------------------------------------------------------------------------- #
     return render(request, 'pybo/question_list.html', context)
 
+
+
+
 def detail(request, question_id):
     """
     Pybo 질문 세부 사항
     """
     question = get_object_or_404(Question, pk=question_id)
-    context = {'question': question}
+    # 입력 파라미터
+    page = request.GET.get('page', '1')  # 페이지
+    so = request.GET.get('so', 'recent') # 정렬기준
+
+    # 정렬
+    if so == 'recommend':
+        answer_list = question.answer_set.annotate(num_voter=Count('voter')).order_by('-num_voter', '-create_date')
+    elif so == 'popular':
+        answer_list = question.answer_set.annotate(num_comment=Count('comment')).order_by('-num_comment', '-create_date')
+    else: # recent
+        answer_list = question.answer_set.order_by('-create_date')
+
+    # ---------------------------------------------------------------------------- #
+
+    # 페이징처리
+    paginator = Paginator(answer_list, 3)  # 페이지당 3개씩 보여주기
+    page_obj = paginator.get_page(page)
+
+    context = {'question': question, 'answer_list': page_obj, 'so': so}
     return render(request, 'pybo/question_detail.html', context)

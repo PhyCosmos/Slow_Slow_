@@ -87,10 +87,64 @@
     </div>
     {% comment %} 추천 1 : 질문 11 row영역 끝 {% endcomment %}
 
-    <!-- 답변 추천 1: 답변내용 9 row영역 시작 -->
-    <h5 class="border-bottom my-3 py-2">{{ question.answer_set.count }}개의 답변이 있습니다.</h5>
-    {% for answer in question.answer_set.all %}
-    <a name="answer_{{ answer.id }}"></a>
+    <!-- 답변 헤더: 정렬 및 페이지/개수 정보 -->
+    <div class="row my-3">
+        <div class="col-2">
+            <select class="form-control so">
+                <option value="recent" {% if so == 'recent' %}selected{% endif %}>최신순</option>
+                <option value="recommend" {% if so == 'recommend' %}selected{% endif %}>추천순</option>
+                <option value="popular" {% if so == 'popular' %}selected{% endif %}>인기순</option>
+            </select>
+        </div>
+
+        {% comment %} 답변 페이징 {% endcomment %}        
+        <ul class="col-7 pagination justify-content-center">
+            
+            {% comment %} '이전'페이지 {% endcomment %}
+            {% if answer_list.has_previous %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ answer_list.previous_page_number }}" href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            {% comment %} 페이지리스트 {% endcomment %}
+            {% for page_number in answer_list.paginator.page_range %}
+            {% if page_number >= answer_list.number|add:-2 and page_number <= answer_list.number|add:2 %}
+                {% if page_number == answer_list.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% comment %} '다음'페이지 {% endcomment %}
+            {% if answer_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ answer_list.next_page_number }}" href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+            
+        </ul>
+
+        <h5 class="col-3 border-bottom py-2">{{ answer_list.paginator.count }}개의 답변이 있습니다.</h5>
+    </div>
+    <!-- 답변 헤더: 정렬 및 페이지/개수 정보 끝 -->
+
+    <!-- 답변 열거 -->
+    {% for answer in answer_list %}        
+    <a id="answer_{{ answer.id }}"></a>
+    
     <div class="row my-3">
         <!-- 답변추천영역 -->
         <div class="col-1">
@@ -162,9 +216,14 @@
             </div>
         </div>
     </div>
-    {% endfor %}
-    <!-- 답변 추천 1: 답변내용 9 row영역 끝 -->
+    {% endfor %} 
+    <!-- 답변 열거 끝 -->
     
+    <!-- 검색요청 폼 -->
+    <form id="searchForm" method="get" action="{% url 'pybo:detail' question.id %}">
+        <input type="hidden" id="page" name="page" value="{{ page }}">
+        <input type="hidden" id="so" name="so" value="{{ so }}">
+    </form>
     <!-- 답변 등록 폼 영역    -->
     <form action="{% url 'pybo:answer_create' question.id %}" method="post" class="my-3">
         {% csrf_token %}
@@ -202,8 +261,19 @@ $(document).ready(function(){
 
     $(".recommend").on("click", function(){
         if(confirm("정말로 추천하시겠습니까?")) {
-            location.href = $(this).data('uri');
+            location.href = $(this).data('uri');            
         }
+    });
+
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+
+    $(".so").on('change', function(){
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
     });
 });
 </script>
