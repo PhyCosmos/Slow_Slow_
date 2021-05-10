@@ -4,7 +4,7 @@ from ..models import Question
 from django.core.paginator import Paginator
 
 import logging
-logger = logging.getLogger('pybo')
+logger = logging.getLogger(__name__)
 
 
 def index(request):
