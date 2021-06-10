@@ -2,6 +2,8 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+# python-dotenv 환경설정패키지
+from dotenv import load_dotenv
 
 
 def main():
@@ -19,4 +21,6 @@ def main():
 
 
 if __name__ == '__main__':
+    # python-dotenv 환경설정패키지
+    load_dotenv()
     main()

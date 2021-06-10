@@ -3,3 +3,19 @@ db.sqlite3
 *.pyc
 __pycache__
 logs
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.back/
+venv.bak/
+
+# vscode
+.vscode/
+
+
+# personal documents
+documents/
