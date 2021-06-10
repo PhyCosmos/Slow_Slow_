@@ -7,11 +7,11 @@ STATICFILES_DIRS = []
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'pybo',
-        'USER': 'dbmasteruser',
-        'PASSWORD': 'it:S#i&R.:J1J}pFKxu#;4LF96VH,1U}',
-        'HOST': 'ls-e3071c3a6f3ebe97c2c12be5fff717d078aed22a.cygxbr5gvl3t.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': os.environ.get('django.db.backends.postgresql_psycopg2', 'django.db.backends.sqlite3'),
+        "NAME": os.getenv("DATABASE_NAME", BASE_DIR / 'db.sqlite3'),
+        "USER": os.getenv("DATABASE_USER", ''),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", ''),
+        "HOST": os.getenv("DATABASE_HOST", None),
+        "PORT": os.getenv("DATABASE_PORT", None),        
     }
 }
